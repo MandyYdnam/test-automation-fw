@@ -1,0 +1,10 @@
+*.html
+*.png
+*.js
+*.css
+*.xml
+*.gif
+# Log file
+*.log
+# Compiled class file
+*.class
