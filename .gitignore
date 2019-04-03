@@ -2,7 +2,6 @@
 *.png
 *.js
 *.css
-*.xml
 *.gif
 # Log file
 *.log

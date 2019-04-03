@@ -23,7 +23,7 @@ public class base {
 	FileInputStream oFIS;
 	JavascriptExecutor js;
 	WebDriverWait wd;
-	static final Logger log=LogManager.getLogger(base.class.getClass());
+	static final Logger log=LogManager.getLogger(base.class.getName());
 	
 	
 	public WebDriver intializeDriver() throws IOException

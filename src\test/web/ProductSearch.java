@@ -14,7 +14,7 @@ import web.Resources.pageObject.HomePage;
 
 
 public class ProductSearch extends base {
-	static final Logger log=LogManager.getLogger(ProductSearch.class.getClass());
+	static final Logger log=LogManager.getLogger(ProductSearch.class.getName());
 	@BeforeTest
 	public void initilize() throws IOException
 	{
@@ -22,7 +22,7 @@ public class ProductSearch extends base {
 		driver= intializeDriver();
 		
 		//Navigation
-		driver.get(getBaseUrl());
+		//driver.get(getBaseUrl());
 	}
 	@AfterTest
 	public void cleanUp()
@@ -35,11 +35,17 @@ public class ProductSearch extends base {
 	public void FirstTest() throws IOException
 	{
 		
-		HomePage hp=new HomePage(driver);
+		/*HomePage hp=new HomePage(driver);
 		
 		//hp.getSearchBar().sendKeys("iPhone"+ Keys.RETURN );
 		cjsSendKeys(hp.getSearchBar(), "iPhone");
 		cjsClick(hp.getSearchIcon());
+		*/
+		
+		log.info("From Product Search1");
+		log.info("From Product Search2");
+		log.info("From Product Search3");
+		log.info("From Product Search4");
 			
 	}
 	
