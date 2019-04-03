@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,12 +16,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+
 public class base {
-	public  WebDriver driver;
+	public  static WebDriver driver;
 	Properties propFile;
 	FileInputStream oFIS;
 	JavascriptExecutor js;
 	WebDriverWait wd;
+	static final Logger log=LogManager.getLogger(base.class.getClass());
 	
 	
 	public WebDriver intializeDriver() throws IOException
@@ -32,6 +36,8 @@ public class base {
 		if (propFile.getProperty("browser").equals("Chrome")) {
 			System.setProperty("webdriver.chrome.driver", propFile.getProperty("DriverPath")+"/chromedriver");
 			driver= new ChromeDriver();
+			log.info("intializeDriver");
+			
 		}
 		if (driver!=null)
 		{
@@ -54,6 +60,7 @@ public class base {
 	
 	public String getBaseUrl()
 	{
+		
 		return propFile.getProperty("BaseURL").toString();
 	}
 	/* Function: cjsSendKeys
@@ -65,10 +72,12 @@ public class base {
 	{
 		try
 		{
+			log.info("Sending keys unsing Js");
 			wd.until(ExpectedConditions.visibilityOf(oWebelement));
 			js.executeScript("arguments[0].value=arguments[1]", oWebelement,text);
 		}
 		catch (Exception e){
+			log.error("Sending keys unsing Js Failed");
 			System.out.println("WebElement Not Found:"+oWebelement.toString());
 		}
 		
@@ -82,10 +91,12 @@ public class base {
 	{
 		try
 		{
+			log.info("Clicking unsing Js");
 			wd.until(ExpectedConditions.visibilityOf(oWebelement));	
 			js.executeScript("arguments[0].click()", oWebelement);
 		}
 		catch (Exception e){
+			log.error("Clicking unsing Js Failed");
 			System.out.println("WebElement Not Found:"+oWebelement.toString());
 		}
 		
@@ -99,10 +110,12 @@ public class base {
 	{
 		try
 		{
+			log.info("ScrollToElement unsing Js");
 			wd.until(ExpectedConditions.visibilityOf(oWebelement));			
 			js.executeScript("arguments[0].scrollIntoView", oWebelement);
 		}
 		catch (Exception e){
+			log.error("ScrollToElement unsing Js Failed");
 			System.out.println("WebElement Not Found:"+oWebelement.toString());
 		}
 		
