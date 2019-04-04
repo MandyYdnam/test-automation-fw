@@ -3,10 +3,11 @@
 <Properties>
 	<Property name="basePath">./logs</Property>
 	<property name="filePattern">${date:yyyy-MM-dd}</property>
+	<property name="rollingfilePattern">${date:yyyy-MM-dd_HH_mm}</property>
 </Properties>
   <Appenders>
   
-  <RollingFile name="File" fileName="${basePath}/execlogs${filePattern}.log" filePattern="${basePath}/execlogs${filePattern}_%d{HH-mm}.log" >
+  <RollingFile name="File" fileName="${basePath}/execlogs${filePattern}.log" filePattern="${basePath}/execlogs${rollingfilePattern}.log" >
   	<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
   	<SizeBasedTriggeringPolicy size="500" />
   </RollingFile>
