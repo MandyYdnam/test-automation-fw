@@ -1,14 +1,18 @@
 package web.Resources.Core;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,14 +20,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-
 public class base {
 	public  static WebDriver driver;
+	public  String testName;
 	Properties propFile;
 	FileInputStream oFIS;
 	JavascriptExecutor js;
 	WebDriverWait wd;
 	static final Logger log=LogManager.getLogger(base.class.getName());
+	private int screenshotCount=1;
 	
 	
 	public WebDriver intializeDriver() throws IOException
@@ -139,4 +144,40 @@ public class base {
 	
 	}
 	
+	/* Functionto Capture the page Screenshot
+	 * testName: Name of the test case
+	 * spath= Path to Store the Screenshot
+	 */
+	public  void capturePageScreenshot(String spath ) throws IOException
+	{
+		log.info("Capturing the Page Screenshot");
+		File scFile=	((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		//Copy the File Content to Default Location
+		
+		File sdFile= new File(spath);
+		FileUtils.copyFile(scFile, sdFile);
+		screenshotCount++;
+		
+	}
+	
+	/* Functionto Capture the page Screenshot
+	 * testName: Name of the test case
+	 * spath= Path to Store the Screenshot
+	 */
+	public  void capturePageScreenshot() throws IOException
+	{
+		log.info("Capturing the Page Screenshot");
+		File scFile=	((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		//Copy the File Content to Default Location
+		
+		String defaultPath;
+		if (testName==null)
+			defaultPath= "//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//Screenshot"+screenshotCount + ".png";
+		else
+			defaultPath= "//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//"+testName+"//Screenshot"+screenshotCount + ".png";
+		File sdFile= new File(defaultPath);
+		FileUtils.copyFile(scFile, sdFile);
+		screenshotCount++;
+		
+	}
 }

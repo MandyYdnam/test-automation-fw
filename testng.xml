@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite thread-count="2" name="Suite" parallel="classes">
+<suite name="Suite1"  >
+	<listeners>
+		<listener class-name="web.Resources.Core.TestNGListener"/>
+	</listeners>
   <test name="Test">
     <classes>
       <class name="web.ProductSearch"/>
-    </classes>
-  </test> <!-- Test -->
-    <test name="Test2">
-    <classes>
       <class name="web.ProductSearch2"/>
     </classes>
   </test> <!-- Test -->
+
 </suite> <!-- Suite -->
