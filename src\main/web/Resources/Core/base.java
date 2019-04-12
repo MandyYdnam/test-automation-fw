@@ -21,8 +21,11 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class base {
-	public  static WebDriver driver;
+	//Not making the Driver as static so that I can have Parellel Execution
+	protected WebDriver driver;
 	public  String testName;
+	public String testClass;
+	private String screenshotDir="//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//";
 	Properties propFile;
 	FileInputStream oFIS;
 	JavascriptExecutor js;
@@ -153,14 +156,30 @@ public class base {
 		log.info("Capturing the Page Screenshot");
 		File scFile=	((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 		//Copy the File Content to Default Location
-		
+		String defaultPath=screenshotDir+this.getClass().getName()+"//";
 		File sdFile= new File(spath);
-		FileUtils.copyFile(scFile, sdFile);
-		screenshotCount++;
+		try
+		{
+			if (!(sdFile.isAbsolute()))
+			{
+				defaultPath= defaultPath+spath;
+				sdFile =new File(defaultPath);
+			}	
+				
+			FileUtils.copyFile(scFile, sdFile);
+			screenshotCount++;
+			log.info("Screenshot Captured:"+sdFile);
+		}
+		catch(IOException e)
+		{
+			log.error("Screenshot Path is Not correct. Path must be an absolute Path. Actual Path:"+sdFile);
+			
+		}
+	
 		
 	}
 	
-	/* Functionto Capture the page Screenshot
+	/* Function to Capture the page Screenshot
 	 * testName: Name of the test case
 	 * spath= Path to Store the Screenshot
 	 */
@@ -169,15 +188,21 @@ public class base {
 		log.info("Capturing the Page Screenshot");
 		File scFile=	((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
 		//Copy the File Content to Default Location
-		
-		String defaultPath;
-		if (testName==null)
-			defaultPath= "//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//Screenshot"+screenshotCount + ".png";
-		else
-			defaultPath= "//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//"+testName+"//Screenshot"+screenshotCount + ".png";
-		File sdFile= new File(defaultPath);
+		File sdFile= new File(screenshotDir+"//Screenshot"+screenshotCount + ".png");
 		FileUtils.copyFile(scFile, sdFile);
 		screenshotCount++;
 		
 	}
+	
+	public void setScreenshotDirectory(String dirPath)
+	{
+		if ((dirPath != null) && !(dirPath.isEmpty()))
+		{
+			screenshotDir=dirPath;	
+			log.info("Screenshot Directory has been set to : " +dirPath);
+		}
+		else
+			log.error ("Screenshot Path Cannot be null or Empty");
+	}
+
 }

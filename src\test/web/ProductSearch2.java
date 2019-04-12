@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
@@ -19,16 +20,15 @@ import web.Resources.pageObject.HomePage;
 
 public class ProductSearch2 extends base {
 	static final Logger log=LogManager.getLogger(ProductSearch.class.getName());
-	@BeforeMethod
+	WebDriver driver;
+	@BeforeTest
 	public void initilize() throws IOException
 	{
 		log.info("@BeforeMethod:From Product Search");
 		driver= intializeDriver();
 		
-		//Navigation
-		driver.get(getBaseUrl());
 	}
-	@AfterMethod
+	@AfterTest
 	public void cleanUp()
 	{
 		log.info("@AfterMethod:From Product Search");
@@ -40,13 +40,14 @@ public class ProductSearch2 extends base {
 	public void FirstTest() throws IOException
 	{
 		log.info("FirstTest Thread: "+Thread.currentThread().getId());
-		
+		//Navigation
+		driver.get(getBaseUrl());
 		HomePage hp=new HomePage(driver);
 		
 		//hp.getSearchBar().sendKeys("iPhone"+ Keys.RETURN );
 		cjsSendKeys(hp.getSearchBar(), "iPhone");
 		cjsClick(hp.getSearchIcon());
-		capturePageScreenshot();
+
 		
 	
 	}
@@ -55,6 +56,8 @@ public class ProductSearch2 extends base {
 	public void SecondTest() throws IOException
 	{
 		log.info("SecondTest Thread: "+Thread.currentThread().getId());
+		//Navigation
+		driver.get(getBaseUrl());
 		HomePage hp=new HomePage(driver);
 		
 		//hp.getSearchBar().sendKeys("iPhone"+ Keys.RETURN );

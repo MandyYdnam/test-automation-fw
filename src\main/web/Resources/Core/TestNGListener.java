@@ -7,13 +7,12 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 public class TestNGListener implements ITestListener {
-	base  baseObject=	new base();
+	
 	@Override
 	public void onTestStart(ITestResult result) {
 		// TODO Auto-generated method stub
 		//Setting the Test Name for the Base class	
 	    
-		baseObject.testName=result.getName();
 	}
 
 	@Override
@@ -24,9 +23,11 @@ public class TestNGListener implements ITestListener {
 
 	@Override
 	public void onTestFailure(ITestResult result) {
-		// TODO Auto-generated method stub
+		// this will capture the screenshot on failure
 		try {
-			baseObject.capturePageScreenshot();
+			base  baseObject=	new base();
+			String screenshotName=result.getTestName()+"_failed.png";
+			baseObject.capturePageScreenshot(screenshotName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
