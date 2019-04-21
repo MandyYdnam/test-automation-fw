@@ -3,6 +3,7 @@ package web.Resources.Core;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -12,13 +13,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import okhttp3.internal.Version;
 
 public class base {
 	//Not making the Driver as static so that I can have Parellel Execution
@@ -30,6 +41,7 @@ public class base {
 	FileInputStream oFIS;
 	JavascriptExecutor js;
 	WebDriverWait wd;
+	DesiredCapabilities dc;
 	static final Logger log=LogManager.getLogger(base.class.getName());
 	private int screenshotCount=1;
 	
@@ -41,12 +53,51 @@ public class base {
 		 oFIS = new FileInputStream("/Users/mandeepdhiman/eclipse-workspace/SeleniumJava/TestAutomation/src\\main/web/Config/TestConfig.ini");
 		//Load Properties
 		propFile.load(oFIS);
-		if (propFile.getProperty("browser").equals("Chrome")) {
-			System.setProperty("webdriver.chrome.driver", propFile.getProperty("DriverPath")+"/chromedriver");
-			driver= new ChromeDriver();
-			log.info("intializeDriver");
+		
+		dc=new DesiredCapabilities();
+		
+		if(propFile.getProperty("RemoteWebDriver").toString().equals("1"))
+		{	
 			
+			if (propFile.getProperty("browser").toString().toUpperCase().equals("CHROME")) 
+				dc.setBrowserName(BrowserType.CHROME);		
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("FIREFOX"))  
+				dc.setBrowserName(BrowserType.FIREFOX);
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("IE")) 
+				dc.setBrowserName(BrowserType.IE);
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("EDGE")) 
+				dc.setBrowserName(BrowserType.EDGE);
+			else
+				dc.setBrowserName(BrowserType.CHROME);	
+			
+			driver= new RemoteWebDriver(new URL(propFile.getProperty("RemoteHub").toString()), dc);
 		}
+		else	
+		{
+
+			if (propFile.getProperty("browser").toString().toUpperCase().equals("CHROME")) {				
+				System.setProperty("webdriver.chrome.driver", propFile.getProperty("DriverPath")+"/chromedriver");
+				driver=new ChromeDriver();
+			}
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("FIREFOX"))  {
+				System.setProperty("webdriver.gecko.driver", propFile.getProperty("DriverPath")+"/geckodriver");
+				driver=new FirefoxDriver();
+			}
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("IE")) {
+				System.setProperty("webdriver.internetexplorer.driver", propFile.getProperty("DriverPath")+"/internetexplorerdriver");
+				driver=new InternetExplorerDriver();
+			}
+			else if (propFile.getProperty("browser").toString().toUpperCase().equals("EDGE")) {
+				System.setProperty("webdriver.edge.driver", propFile.getProperty("DriverPath")+"/edgedriver");
+				driver=new EdgeDriver();
+			}
+			else {
+				dc.setBrowserName(BrowserType.CHROME);	
+				System.setProperty("webdriver.chrome.driver", propFile.getProperty("DriverPath")+"/chromedriver");
+				driver=new ChromeDriver();
+			}
+		}
+		log.info("intializeDriver");
 		if (driver!=null)
 		{
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
