@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestData>
+	<Web>
+		<TEST_NAME Name="FirstTest">
+			<CardNumber>12342121</CardNumber>
+			<Password>test</Password></TEST_NAME></Web></TestData>

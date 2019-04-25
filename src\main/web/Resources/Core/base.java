@@ -2,11 +2,20 @@ package web.Resources.Core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +37,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.internal.junit.ArrayAsserts;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import okhttp3.internal.Version;
 
@@ -255,5 +269,34 @@ public class base {
 		else
 			log.error ("Screenshot Path Cannot be null or Empty");
 	}
-
+	
+	public void loadTestData(String testName) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+	{
+		try {
+			FileInputStream xmlFile=new FileInputStream("/Users/mandeepdhiman/eclipse-workspace/SeleniumJava/TestAutomation/src\\main/web/Resources/Core/Data.xml");
+			
+			DocumentBuilder db=DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			//Parsing the XML to DOM 
+			Document xmlDom=	db.parse(xmlFile);
+			// Chreating the Xpath Object to fetch the data from the DOM using xPath
+			XPath xPathObject=  XPathFactory.newInstance().newXPath();
+			Node testCaseNode=	(Node) xPathObject.evaluate("/TestData/Web/TEST_NAME[@Name=\""+testName+"\"]",xmlDom,XPathConstants.NODE);
+			if (testCaseNode != null)  
+			{
+				log.info("Test Data Found");
+				NodeList childNodes= testCaseNode.getChildNodes();
+				for (int i = 0; i < childNodes.getLength(); i++) {
+					if (childNodes.item(i).getNodeType()==Node.ELEMENT_NODE)
+						log.info(childNodes.item(i).getNodeName() +" : "+	childNodes.item(i).getTextContent());
+						//#TO DO: Need to return this data to the calling function.  
+				}
+			}
+			
+			else
+				log.error("Test Data Not Found For Test:"+testName);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
