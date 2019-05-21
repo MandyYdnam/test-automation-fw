@@ -24,7 +24,8 @@ public class XmlTest extends base {
 	@Test
 	public void SecondTest() throws IOException, XPathExpressionException, ParserConfigurationException, SAXException
 	{
-		loadTestData("FirstTest");
+		System.out.println("Found Password:"+getData("FirstTest","Password"));
+		System.out.println("Found Password:"+getData("FirstTest","Password"));
 			
 	}
 }

@@ -5,29 +5,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -37,20 +28,13 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.internal.junit.ArrayAsserts;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import okhttp3.internal.Version;
 
 public class base {
-	//Not making the Driver as static so that I can have Parellel Execution
+	//Not making the Driver as static so that I can have Parallel Execution
 	protected WebDriver driver;
 	public  String testName;
 	public String testClass;
-	private String screenshotDir="//Users//mandeepdhiman//eclipse-workspace//SeleniumJava//TestAutomation//Screenshots//";
+	private String screenshotDir;
 	Properties propFile;
 	FileInputStream oFIS;
 	JavascriptExecutor js;
@@ -58,13 +42,25 @@ public class base {
 	DesiredCapabilities dc;
 	static final Logger log=LogManager.getLogger(base.class.getName());
 	private int screenshotCount=1;
+	private DataFactory oDataFact;
+	public base()
+	{
+		oDataFact=new DataFactory();
+		driver=null;
+		//Default Screenshot Directory
+		screenshotDir=System.getProperty("user.dir");
+		
+	}
 	
-	
+	/*
+	 * Function to Initialize the Driver
+	 * Driver is initialize based upon the Value in the TestConfig
+	 */
 	public WebDriver intializeDriver() throws IOException
 	{
 		 propFile=new Properties();
 		 //Create Input File System to Load the properties
-		 oFIS = new FileInputStream("/Users/mandeepdhiman/eclipse-workspace/SeleniumJava/TestAutomation/src\\main/web/Config/TestConfig.ini");
+		 oFIS = new FileInputStream(System.getProperty("user.dir")+"/src\\main/web/Config/TestConfig.ini");
 		//Load Properties
 		propFile.load(oFIS);
 		
@@ -259,6 +255,10 @@ public class base {
 		
 	}
 	
+	/*
+	 * Function to set the Screenshot Dir.
+	 * By Default Screenshots will be saved in Project root folder
+	 */
 	public void setScreenshotDirectory(String dirPath)
 	{
 		if ((dirPath != null) && !(dirPath.isEmpty()))
@@ -270,33 +270,12 @@ public class base {
 			log.error ("Screenshot Path Cannot be null or Empty");
 	}
 	
-	public void loadTestData(String testName) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
+	/*
+	 * Wrapper Function to Return the Test Data
+	 */
+	public String getData(String testname, String strfieldname)
 	{
-		try {
-			FileInputStream xmlFile=new FileInputStream("/Users/mandeepdhiman/eclipse-workspace/SeleniumJava/TestAutomation/src\\main/web/Resources/Core/Data.xml");
-			
-			DocumentBuilder db=DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			//Parsing the XML to DOM 
-			Document xmlDom=	db.parse(xmlFile);
-			// Chreating the Xpath Object to fetch the data from the DOM using xPath
-			XPath xPathObject=  XPathFactory.newInstance().newXPath();
-			Node testCaseNode=	(Node) xPathObject.evaluate("/TestData/Web/TEST_NAME[@Name=\""+testName+"\"]",xmlDom,XPathConstants.NODE);
-			if (testCaseNode != null)  
-			{
-				log.info("Test Data Found");
-				NodeList childNodes= testCaseNode.getChildNodes();
-				for (int i = 0; i < childNodes.getLength(); i++) {
-					if (childNodes.item(i).getNodeType()==Node.ELEMENT_NODE)
-						log.info(childNodes.item(i).getNodeName() +" : "+	childNodes.item(i).getTextContent());
-						//#TO DO: Need to return this data to the calling function.  
-				}
-			}
-			
-			else
-				log.error("Test Data Not Found For Test:"+testName);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return oDataFact.getData(testname, strfieldname);
 	}
+	
 }
